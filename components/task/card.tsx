@@ -15,7 +15,12 @@ export const TaskCard: React.FC<{ task: Task }> = ({ task }) => (
   <Card>
     <CardHeader>
       <CardTitle>{task.title}</CardTitle>
-      <CardDescription>Due to: {task.due?.toDateString() ?? 'No due date'}</CardDescription>
+      <CardDescription>
+        Due to: {task.due?.toUTCString() ?? 'No due date'}
+        {!task.done && task.due && task.due < new Date() && (
+          <span className="text-destructive"> (Overdue)</span>
+        )}
+      </CardDescription>
     </CardHeader>
 
     <CardContent>{task.content}</CardContent>
