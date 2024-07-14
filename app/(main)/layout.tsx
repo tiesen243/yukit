@@ -12,7 +12,7 @@ const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
     <div className="flex h-dvh grid-cols-12 flex-col gap-4 md:grid">
       <Header />
       <SideBar />
-      <main className="container col-span-9 lg:col-span-10">{children}</main>
+      <main className="container md:col-span-9 lg:col-span-10">{children}</main>
     </div>
   )
 }
