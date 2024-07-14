@@ -69,16 +69,19 @@ const Page: NextPage = () => {
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
                     Effortless Task Management
                   </h1>
+
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
                     Stay organized and productive with our powerful task manager app. Streamline
                     your workflow and achieve your goals with ease.
                   </p>
                 </div>
+
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Link href="/sign-up" className={buttonVariants()}>
                     Sign Up
                   </Link>
-                  <Link href="/" className={buttonVariants({ variant: 'outline' })}>
+
+                  <Link href="/sign-in" className={buttonVariants({ variant: 'outline' })}>
                     Try It Now
                   </Link>
                 </div>

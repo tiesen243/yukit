@@ -1,7 +1,13 @@
-import React from 'react'
+import type { NextPage } from 'next'
 
-const Page = () => {
-  return <div>Page</div>
-}
+import { CreateForm } from '@/components/task/create-form'
+
+const Page: NextPage = () => (
+  <>
+    <h1 className="my-4 text-2xl font-bold">Create new task</h1>
+
+    <CreateForm />
+  </>
+)
 
 export default Page

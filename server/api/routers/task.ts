@@ -1,32 +1,48 @@
+import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
-import { createTRPCRouter, publicProcedure } from '@/server/api/trpc'
+import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc'
 
 export const taskRouter = createTRPCRouter({
-  hello: publicProcedure.input(z.object({ text: z.string() })).query(({ input }) => {
-    return {
-      greeting: `Hello ${input.text}`,
-    }
-  }),
-
-  create: publicProcedure
-    .input(z.object({ title: z.string().min(1), content: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      return ctx.db.task.create({
-        data: {
-          title: input.title,
-          content: input.content,
-          userId: '1',
+  getTasks: protectedProcedure
+    .input(z.object({ isDone: z.boolean().optional() }))
+    .query(async ({ ctx, input }) => {
+      const tasks = await ctx.db.task.findMany({
+        where: {
+          userId: ctx.session.userId,
+          done: input.isDone,
         },
+        orderBy: { updatedAt: 'desc' },
       })
+      if (!tasks) throw new TRPCError({ code: 'NOT_FOUND', message: 'No tasks found' })
+
+      return tasks
     }),
 
-  getLatest: publicProcedure.query(({ ctx }) => {
-    return ctx.db.task.findFirst({
-      orderBy: { createdAt: 'desc' },
+  getDeadline: protectedProcedure.query(async ({ ctx }) => {
+    const deadline = await ctx.db.task.findFirst({
+      where: {
+        userId: ctx.session.userId,
+        due: { lte: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) },
+        done: false,
+      },
+      orderBy: { due: 'asc' },
     })
+    if (!deadline) throw new TRPCError({ code: 'NOT_FOUND', message: 'No deadline found' })
+
+    return deadline
   }),
+
+  createTask: protectedProcedure
+    .input(z.object({ title: z.string(), content: z.string(), due: z.date().optional() }))
+    .mutation(async ({ ctx, input }) => {
+      const newTask = await ctx.db.task.create({
+        data: { ...input, userId: ctx.session.userId },
+      })
+
+      if (!newTask)
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to create task' })
+
+      return newTask
+    }),
 })
