@@ -17,12 +17,14 @@ export const Navs: React.FC = () => {
           key={idx}
           href={href}
           className={cn(
-            buttonVariants({ variant: 'ghost' }),
-            'justify-start gap-2',
-            pathName === href ? 'bg-accent/50' : '',
+            buttonVariants(),
+            'justify-start gap-2 underline-offset-4',
+            'bg-transparent text-foreground hover:bg-transparent hover:underline',
+            'md:bg-transparent md:text-foreground md:hover:bg-accent md:hover:text-accent-foreground md:hover:no-underline',
+            pathName === href ? 'underline md:bg-accent/50 md:no-underline' : '',
           )}
         >
-          <Icon />
+          <Icon className="hidden md:block" />
           <span>{title}</span>
         </Link>
       ))}
