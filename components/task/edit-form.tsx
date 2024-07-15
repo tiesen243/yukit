@@ -1,7 +1,7 @@
 'use client'
 
-import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 import { FormField } from '@/components/form-field'
 import { Button } from '@/components/ui/button'
@@ -13,7 +13,7 @@ export const EditTaskForm: React.FC<{ id: string }> = ({ id }) => {
   const router = useRouter()
   const utils = api.useUtils()
 
-  const [task] = api.task.getTask.useSuspenseQuery({ id })
+  const { data: task } = api.task.getTask.useQuery({ id })
   const { mutate, isPending, error } = api.task.editTask.useMutation({
     onSuccess: () => {
       toast.success('Task updated')
@@ -22,6 +22,8 @@ export const EditTaskForm: React.FC<{ id: string }> = ({ id }) => {
     },
     onError: (error) => !error.data?.zodError && toast.error(error.message),
   })
+
+  if (!task) return null
 
   const action = async (formData: FormData) => {
     const content = String(formData.get('content'))
