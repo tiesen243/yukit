@@ -13,7 +13,6 @@ datasource db {
 model Task {
   id      String    @id @default(auto()) @map("_id") @db.ObjectId
   userId  String    @db.String
-  title   String    @db.String
   content String    @db.String
   done    Boolean   @default(false)
   due     DateTime? @db.Date

@@ -1,34 +1,29 @@
 import type { Task } from '@prisma/client'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardDescription, CardFooter, CardHeader } from '@/components/ui/card'
 import { DeleteTask } from './delete-task'
 import { ToggleDone } from './toggle-done'
+import Link from 'next/link'
 
 export const TaskCard: React.FC<{ task: Task }> = ({ task }) => (
-  <Card>
-    <CardHeader>
-      <CardTitle>{task.title}</CardTitle>
-      <CardDescription>
-        Due to: {task.due?.toUTCString() ?? 'No due date'}
-        {!task.done && task.due && task.due < new Date() && (
-          <span className="text-destructive"> (Overdue)</span>
-        )}
-      </CardDescription>
-    </CardHeader>
+  <Link href={`/tasks/${task.id}`}>
+    <Card className="flex flex-col">
+      <CardHeader className="flex-1">
+        <p className="line-clamp-2">{task.content}</p>
+      </CardHeader>
 
-    <CardContent>{task.content}</CardContent>
+      <CardFooter className="grid grid-cols-2 gap-2">
+        <CardDescription className="col-span-2">
+          Due to: {task.due?.toUTCString() ?? 'No due date'}
+          {!task.done && task.due && task.due < new Date() && (
+            <span className="text-destructive"> (Overdue)</span>
+          )}
+        </CardDescription>
 
-    <CardFooter className="grid grid-cols-2 gap-2">
-      <ToggleDone task={task} />
+        <ToggleDone task={task} />
 
-      <DeleteTask id={task.id} />
-    </CardFooter>
-  </Card>
+        <DeleteTask id={task.id} />
+      </CardFooter>
+    </Card>
+  </Link>
 )

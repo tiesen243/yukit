@@ -21,23 +21,14 @@ export const CreateForm: React.FC = () => {
   })
 
   const action = async (formData: FormData) => {
-    const title = String(formData.get('title'))
     const content = String(formData.get('content'))
     const due = formData.get('due') ? new Date(String(formData.get('due'))) : undefined
 
-    mutate({ title, content, due })
+    mutate({ content, due })
   }
 
   return (
     <form action={action} className="space-y-4">
-      <FormField
-        name="title"
-        label="Title"
-        placeholder="What's the title of your task?"
-        message={error?.data?.zodError?.title?.at(0)}
-        disabled={isPending}
-      />
-
       <FormField
         name="content"
         label="Content"
@@ -46,7 +37,7 @@ export const CreateForm: React.FC = () => {
         disabled={isPending}
         asChild
       >
-        <Textarea name="content" />
+        <Textarea />
       </FormField>
 
       <FormField

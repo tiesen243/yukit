@@ -17,8 +17,18 @@ export const taskRouter = createTRPCRouter({
     return tasks
   }),
 
-  getDeadline: protectedProcedure.query(async ({ ctx }) => {
-    const deadline = await ctx.db.task.findFirst({
+  getTask: protectedProcedure.input(task.getTaskSchema).query(async ({ ctx, input }) => {
+    const task = await ctx.db.task.findUnique({
+      where: { id: input.id, userId: ctx.session.userId },
+    })
+
+    if (!task) throw new TRPCError({ code: 'NOT_FOUND', message: 'Task not found' })
+
+    return task
+  }),
+
+  getDeadlines: protectedProcedure.query(async ({ ctx }) => {
+    const deadlines = await ctx.db.task.findMany({
       where: {
         userId: ctx.session.userId,
         due: { lte: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) },
@@ -26,9 +36,9 @@ export const taskRouter = createTRPCRouter({
       },
       orderBy: { due: 'asc' },
     })
-    if (!deadline) throw new TRPCError({ code: 'NOT_FOUND', message: 'No deadline found' })
+    if (!deadlines) throw new TRPCError({ code: 'NOT_FOUND', message: 'No deadlines found' })
 
-    return deadline
+    return deadlines
   }),
 
   createTask: protectedProcedure.input(task.createTaskSchema).mutation(async ({ ctx, input }) => {
@@ -55,6 +65,21 @@ export const taskRouter = createTRPCRouter({
     const updatedTask = await ctx.db.task.update({
       where: { id: input.id },
       data: { done: !task.done },
+    })
+
+    if (!updatedTask)
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to update task' })
+
+    return { isDone: updatedTask.done }
+  }),
+
+  editTask: protectedProcedure.input(task.editTaskSchema).mutation(async ({ ctx, input }) => {
+    const task = await ctx.db.task.findUnique({ where: { id: input.id } })
+    if (!task) throw new TRPCError({ code: 'NOT_FOUND', message: 'Task not found' })
+
+    const updatedTask = await ctx.db.task.update({
+      where: { id: input.id },
+      data: { content: input.content ?? task.content, due: input.due ?? task.due },
     })
 
     if (!updatedTask)

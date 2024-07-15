@@ -10,7 +10,7 @@ export const DeleteTask: React.FC<{ id: string }> = ({ id }) => {
   const { mutate, isPending } = api.task.deleteTask.useMutation({
     onSuccess: () => {
       toast.success('Task deleted')
-      void utils.task.getTasks.invalidate()
+      void utils.task.invalidate()
     },
     onError: (error) => toast.error(error.message),
   })

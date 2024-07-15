@@ -4,7 +4,12 @@ import { redirect } from 'next/navigation'
 import { SideBar } from '@/components/layouts/side-bar'
 import { Header } from '@/components/layouts/header'
 
-const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
+interface Props {
+  children: React.ReactNode
+  modal: React.ReactNode
+}
+
+const MainLayout: React.FC<Props> = ({ children, modal }) => {
   const { userId } = auth()
   if (!userId) redirect('/landing')
 
@@ -13,6 +18,7 @@ const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
       <Header />
       <SideBar />
       <main className="container md:col-span-9 lg:col-span-10">{children}</main>
+      {modal}
     </div>
   )
 }
