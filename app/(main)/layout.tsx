@@ -6,10 +6,10 @@ import { Header } from '@/components/layouts/header'
 
 interface Props {
   children: React.ReactNode
-  modal: React.ReactNode
+  // modal: React.ReactNode
 }
 
-const MainLayout: React.FC<Props> = ({ children, modal }) => {
+const MainLayout: React.FC<Props> = ({ children }) => {
   const { userId } = auth()
   if (!userId) redirect('/landing')
 
@@ -18,7 +18,6 @@ const MainLayout: React.FC<Props> = ({ children, modal }) => {
       <Header />
       <SideBar />
       <main className="container md:col-span-9 lg:col-span-10">{children}</main>
-      {modal}
     </div>
   )
 }
