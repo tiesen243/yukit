@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 
-import { EditTaskForm } from '@/components/task/edit-form'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Modal } from './_modal'
 
@@ -15,8 +14,6 @@ const Page: NextPage<Props> = async ({ params }) => (
         <CardHeader>
           <CardTitle>Edit Task</CardTitle>
         </CardHeader>
-
-        <EditTaskForm id={params.id} />
       </Card>
     </Modal>
   </>
