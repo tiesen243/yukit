@@ -14,7 +14,7 @@ model Task {
   id      String    @id @default(auto()) @map("_id") @db.ObjectId
   userId  String    @db.String
   content String    @db.String
-  done    Boolean   @default(false)
+  isDone  Boolean   @default(false)
   due     DateTime? @db.Date
 
   createdAt DateTime @default(now()) @db.Date

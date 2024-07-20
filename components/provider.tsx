@@ -20,6 +20,6 @@ const BaseProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 export const Provider: React.FC<React.PropsWithChildren> = ({ children }) => (
   <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
     <BaseProvider>{children}</BaseProvider>
-    <Toaster />
+    <Toaster richColors />
   </ThemeProvider>
 )

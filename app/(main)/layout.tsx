@@ -1,25 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation'
+import { Header } from '@/components/header'
 
-import { SideBar } from '@/components/layouts/side-bar'
-import { Header } from '@/components/layouts/header'
-
-interface Props {
-  children: React.ReactNode
-  // modal: React.ReactNode
-}
-
-const MainLayout: React.FC<Props> = ({ children }) => {
-  const { userId } = auth()
-  if (!userId) redirect('/landing')
-
-  return (
-    <div className="flex h-dvh grid-cols-12 flex-col gap-4 md:grid">
-      <Header />
-      <SideBar />
-      <main className="container md:col-span-9 lg:col-span-10">{children}</main>
-    </div>
-  )
-}
+const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => (
+  <>
+    <Header />
+    <main>{children}</main>
+  </>
+)
 
 export default MainLayout

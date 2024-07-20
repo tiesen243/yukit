@@ -6,10 +6,12 @@ import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
 
 const Page: NextPage = () => {
+  const roll = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+
   const navs = [
     { title: 'Features', href: '#features' },
-    { title: 'Pricing', href: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
-    { title: 'About', href: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
+    { title: 'Pricing', href: roll },
+    { title: 'About', href: roll },
     { title: 'Contact', href: 'https://tiesen.id.vn/#cta' },
   ]
 
@@ -38,10 +40,9 @@ const Page: NextPage = () => {
 
   return (
     <>
-      {/* Header */}
       <header className="flex h-14 items-center px-4 lg:px-6">
         <div className="flex items-center justify-center">
-          <Image src="/imgs/logo.svg" width="24" height="24" alt="Yukit" className="dark:invert" />
+          <Image src="/imgs/logo.svg" width="32" height="32" alt="Yukit" className="dark:invert" />
           <span className="sr-only">Yukit</span>
         </div>
 
@@ -50,8 +51,9 @@ const Page: NextPage = () => {
             <Link
               key={title}
               href={href}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-sm font-medium underline-offset-4 hover:underline"
-              prefetch={false}
             >
               {title}
             </Link>
@@ -59,7 +61,6 @@ const Page: NextPage = () => {
         </nav>
       </header>
 
-      {/* Hero */}
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
           <div className="container px-4 md:px-6">
@@ -97,7 +98,6 @@ const Page: NextPage = () => {
           </div>
         </section>
 
-        {/* Features */}
         <section id="features" className="w-full bg-muted py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -127,7 +127,7 @@ const Page: NextPage = () => {
                   productive, and focused. Manage your tasks with ease and achieve your goals.
                 </p>
               </div>
-              <Link href="/sign-up" className={buttonVariants()} prefetch={false}>
+              <Link href="/sign-up" className={buttonVariants()}>
                 Sign Up
               </Link>
             </div>
@@ -135,18 +135,23 @@ const Page: NextPage = () => {
         </section>
       </main>
 
-      {/* Footer */}
       <footer className="flex w-full shrink-0 flex-col items-center gap-2 border-t px-4 py-6 sm:flex-row md:px-6">
         <p className="text-xs text-muted-foreground">
           &copy; {new Date().getFullYear()} Yukit. All rights reserved.
         </p>
+
         <nav className="flex gap-4 sm:ml-auto sm:gap-6">
-          <Link href="#" className="text-xs underline-offset-4 hover:underline" prefetch={false}>
-            Terms of Service
-          </Link>
-          <Link href="#" className="text-xs underline-offset-4 hover:underline" prefetch={false}>
-            Privacy
-          </Link>
+          {['Terms of Service', 'Privacy'].map((title, idx) => (
+            <Link
+              key={idx}
+              href={roll}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs underline-offset-4 hover:underline"
+            >
+              {title}
+            </Link>
+          ))}
         </nav>
       </footer>
     </>

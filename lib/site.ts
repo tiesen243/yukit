@@ -33,6 +33,7 @@ export const siteConfig: SiteConfig = {
     },
     alternates: { canonical: getBaseUrl() },
   },
+
   viewport: {
     themeColor: [
       { media: '(prefers-color-scheme: light)', color: 'hsl(0 0% 100%)' },

@@ -2,15 +2,18 @@
 
 import { api } from '@/lib/trpc/react'
 import { TaskCard } from './card'
+import { AnimatePresence } from 'framer-motion'
 
 export const TaskList: React.FC<{ isDone?: boolean }> = ({ isDone }) => {
-  const [tasks] = api.task.getTasks.useSuspenseQuery({ isDone })
+  const [tasks, { refetch }] = api.task.getTasks.useSuspenseQuery({ isDone })
 
   return (
-    <section className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} />
-      ))}
-    </section>
+    <div className="container flex max-w-screen-md flex-col gap-4">
+      <AnimatePresence>
+        {tasks.map((task) => (
+          <TaskCard key={task.id} task={task} refresh={refetch} />
+        ))}
+      </AnimatePresence>
+    </div>
   )
 }

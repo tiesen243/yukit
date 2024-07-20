@@ -1,15 +1,12 @@
 import { TRPCError } from '@trpc/server'
 
 import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc'
-import * as task from '@/server/api/validates/task'
+import { taskSchema } from '@/server/api/validates/task'
 
 export const taskRouter = createTRPCRouter({
-  getTasks: protectedProcedure.input(task.getTasksSchema).query(async ({ ctx, input }) => {
+  getTasks: protectedProcedure.input(taskSchema.getTasks).query(async ({ ctx, input }) => {
     const tasks = await ctx.db.task.findMany({
-      where: {
-        userId: ctx.session.userId,
-        done: input.isDone,
-      },
+      where: { userId: ctx.session.userId, isDone: input.isDone },
       orderBy: { updatedAt: 'desc' },
     })
     if (!tasks) throw new TRPCError({ code: 'NOT_FOUND', message: 'No tasks found' })
@@ -17,22 +14,12 @@ export const taskRouter = createTRPCRouter({
     return tasks
   }),
 
-  getTask: protectedProcedure.input(task.getTaskSchema).query(async ({ ctx, input }) => {
-    const task = await ctx.db.task.findUnique({
-      where: { id: input.id, userId: ctx.session.userId },
-    })
-
-    if (!task) throw new TRPCError({ code: 'NOT_FOUND', message: 'Task not found' })
-
-    return task
-  }),
-
   getDeadlines: protectedProcedure.query(async ({ ctx }) => {
     const deadlines = await ctx.db.task.findMany({
       where: {
         userId: ctx.session.userId,
         due: { lte: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) },
-        done: false,
+        isDone: false,
       },
       orderBy: { due: 'asc' },
     })
@@ -41,7 +28,7 @@ export const taskRouter = createTRPCRouter({
     return deadlines
   }),
 
-  createTask: protectedProcedure.input(task.createTaskSchema).mutation(async ({ ctx, input }) => {
+  createTask: protectedProcedure.input(taskSchema.createTask).mutation(async ({ ctx, input }) => {
     if (input.due && input.due < new Date())
       throw new TRPCError({ code: 'BAD_REQUEST', message: 'Due date must be in the future' })
 
@@ -55,7 +42,7 @@ export const taskRouter = createTRPCRouter({
     return newTask
   }),
 
-  toggleDone: protectedProcedure.input(task.toggleDoneSchema).mutation(async ({ ctx, input }) => {
+  toggleDone: protectedProcedure.input(taskSchema.toggleDone).mutation(async ({ ctx, input }) => {
     const task = await ctx.db.task.findUnique({
       where: { id: input.id, userId: ctx.session.userId },
     })
@@ -64,16 +51,16 @@ export const taskRouter = createTRPCRouter({
 
     const updatedTask = await ctx.db.task.update({
       where: { id: input.id },
-      data: { done: !task.done },
+      data: { isDone: !task.isDone },
     })
 
     if (!updatedTask)
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to update task' })
 
-    return { isDone: updatedTask.done }
+    return { isDone: updatedTask.isDone }
   }),
 
-  editTask: protectedProcedure.input(task.editTaskSchema).mutation(async ({ ctx, input }) => {
+  editTask: protectedProcedure.input(taskSchema.editTask).mutation(async ({ ctx, input }) => {
     const task = await ctx.db.task.findUnique({ where: { id: input.id } })
     if (!task) throw new TRPCError({ code: 'NOT_FOUND', message: 'Task not found' })
 
@@ -88,7 +75,7 @@ export const taskRouter = createTRPCRouter({
     return updatedTask
   }),
 
-  deleteTask: protectedProcedure.input(task.deleteTaskSchema).mutation(async ({ ctx, input }) => {
+  deleteTask: protectedProcedure.input(taskSchema.deleteTask).mutation(async ({ ctx, input }) => {
     const task = await ctx.db.task.delete({
       where: { id: input.id, userId: ctx.session.userId },
     })

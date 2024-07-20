@@ -1,13 +1,25 @@
 import type { NextPage } from 'next'
 
-import { DeadlineList } from '@/components/task/deadlines'
+import { TaskList } from '@/components/task/list'
+import { api, HydrateClient } from '@/lib/trpc/server'
+import { CreateForm } from '@/components/task/create-form'
 
-const Page: NextPage = () => (
-  <>
-    <h1 className="my-4 text-2xl font-bold">Deadlines</h1>
+interface Props {
+  searchParams: { isDone?: string }
+}
 
-    <DeadlineList />
-  </>
-)
+const Page: NextPage<Props> = async ({ searchParams }) => {
+  const isDone = searchParams.isDone ? searchParams.isDone === 'true' : undefined
+
+  void api.task.getTasks.prefetch({ isDone })
+
+  return (
+    <HydrateClient>
+      <TaskList isDone={isDone} />
+
+      <CreateForm />
+    </HydrateClient>
+  )
+}
 
 export default Page
