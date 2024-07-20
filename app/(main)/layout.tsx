@@ -1,6 +1,7 @@
-import { Header } from '@/components/header'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
+
+import { Header } from '@/components/header'
 
 const MainLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { userId } = auth()
