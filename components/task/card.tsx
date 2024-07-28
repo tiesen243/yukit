@@ -30,7 +30,7 @@ export const TaskCard: React.FC<{ task: Task; refresh: () => void }> = ({ task, 
 
   return (
     <motion.div
-      className="rounded-lg bg-secondary text-secondary-foreground"
+      className="rounded-lg bg-secondary text-secondary-foreground shadow-lg"
       initial={{ opacity: 0, y: 25 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: task.isDone ? -25 : 25 }}

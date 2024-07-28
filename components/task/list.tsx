@@ -1,8 +1,9 @@
 'use client'
 
+import { AnimatePresence } from 'framer-motion'
+
 import { api } from '@/lib/trpc/react'
 import { TaskCard } from './card'
-import { AnimatePresence } from 'framer-motion'
 
 export const TaskList: React.FC<{ isDone?: boolean }> = ({ isDone }) => {
   const [tasks, { refetch }] = api.task.getTasks.useSuspenseQuery({ isDone })
